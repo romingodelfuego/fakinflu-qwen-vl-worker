@@ -19,7 +19,7 @@ import base64, io, json, os
 import runpod
 import torch
 from PIL import Image
-from transformers import AutoModelForImageTextToText, AutoProcessor
+from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
 
 MODEL_DIR = os.environ.get("MODEL_DIR", "/models/qwen3vl-8b")
 SYSTEM_PROMPT_PATH = os.environ.get("SYSTEM_PROMPT_PATH", "/app/system_prompt.txt")
@@ -29,8 +29,10 @@ with open(SYSTEM_PROMPT_PATH, encoding="utf-8") as f:
     SYSTEM_PROMPT = f.read()
 
 # --- chargement unique au cold start (reste chaud entre les jobs) ------------
-_model = AutoModelForImageTextToText.from_pretrained(
-    MODEL_DIR, torch_dtype="auto", device_map="auto")
+# Classe explicite Qwen3-VL (l'auto-mapping ne la resout de facon fiable qu'avec
+# un transformers tres recent ; cf. Dockerfile : install depuis les sources).
+_model = Qwen3VLForConditionalGeneration.from_pretrained(
+    MODEL_DIR, dtype="auto", device_map="auto")
 _model.eval()
 _proc = AutoProcessor.from_pretrained(MODEL_DIR)
 
