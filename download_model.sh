@@ -10,19 +10,20 @@ MODEL_DIR="${MODEL_DIR:-/models/qwen3vl-8b}"
 echo ">> telechargement de ${MODEL_ID} -> ${MODEL_DIR}"
 mkdir -p "${MODEL_DIR}"
 
-# huggingface-hub est tire par transformers ; on utilise le CLI hf pour un download robuste.
-pip3 install --no-cache-dir "huggingface_hub[cli]>=0.34" >/dev/null
-
-huggingface-cli download "${MODEL_ID}" \
+# 'hf' est fourni par huggingface_hub (installe a l'etape 2 du Dockerfile).
+# NE PAS utiliser 'huggingface-cli' : deprecated et cassé dans huggingface_hub >= 1.x.
+hf download "${MODEL_ID}" \
   --local-dir "${MODEL_DIR}" \
-  --exclude "*.pth" "*.bin" "original/*"
+  --exclude "*.pth" "original/*"
 
-count=$(find "${MODEL_DIR}" -name '*.safetensors' | wc -l)
-if [ "$count" -eq 0 ]; then
-  echo "!! ERREUR : aucun fichier .safetensors dans ${MODEL_DIR}"
-  echo "   Le download a probablement echoue."
+# Verification : sans ca, un download partiel passe inapercu (build "COMPLETED")
+# et le worker crashe au runtime (OSError: no file named model.safetensors).
+count=$(find "${MODEL_DIR}" -name '*.safetensors' | wc -l | tr -d ' ')
+if [ "$count" -eq 0 ] || [ ! -f "${MODEL_DIR}/model.safetensors.index.json" ]; then
+  echo "!! ERREUR : safetensors incomplets dans ${MODEL_DIR} (count=$count)"
+  find "${MODEL_DIR}" -maxdepth 1 -type f
   exit 1
 fi
 
-echo ">> OK. ${count} fichier(s) safetensors."
-ls -lh "${MODEL_DIR}"/*.safetensors 2>/dev/null | head -n 20
+echo ">> OK. ${count} shard(s) safetensors."
+ls -lh "${MODEL_DIR}"/*.safetensors

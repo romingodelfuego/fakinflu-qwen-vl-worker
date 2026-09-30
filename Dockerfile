@@ -31,7 +31,7 @@ RUN pip3 install "git+https://github.com/huggingface/transformers" \
       accelerate \
       "qwen-vl-utils[decord]" \
       pillow \
-      "huggingface_hub[cli]>=0.34" \
+      "huggingface_hub>=0.34" \
       runpod
 
 # 3) BAKE du modele
