@@ -37,12 +37,12 @@ RUN pip3 install \
 # 3) BAKE du modele
 ARG MODEL_ID=Qwen/Qwen3-VL-8B-Instruct
 ENV MODEL_DIR=/models/qwen3vl-8b
-COPY serverless/download_model.sh /tmp/download_model.sh
+COPY download_model.sh /tmp/download_model.sh
 RUN MODEL_ID=${MODEL_ID} MODEL_DIR=${MODEL_DIR} bash /tmp/download_model.sh
 
 # 4) cerveau (methode selective) + handler
 COPY system_prompt.txt /app/system_prompt.txt
-COPY andler.py        /app/handler.py
+COPY handler.py        /app/handler.py
 
 # 5) smoke test : le modele se charge-t-il avec cette version de transformers ?
 #    (echoue au BUILD, pas en prod — comme --quick-test-for-ci cote ComfyUI)
