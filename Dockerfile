@@ -41,8 +41,8 @@ COPY serverless/download_model.sh /tmp/download_model.sh
 RUN MODEL_ID=${MODEL_ID} MODEL_DIR=${MODEL_DIR} bash /tmp/download_model.sh
 
 # 4) cerveau (methode selective) + handler
-COPY serverless/system_prompt.txt /app/system_prompt.txt
-COPY serverless/handler.py        /app/handler.py
+COPY system_prompt.txt /app/system_prompt.txt
+COPY andler.py        /app/handler.py
 
 # 5) smoke test : le modele se charge-t-il avec cette version de transformers ?
 #    (echoue au BUILD, pas en prod — comme --quick-test-for-ci cote ComfyUI)
