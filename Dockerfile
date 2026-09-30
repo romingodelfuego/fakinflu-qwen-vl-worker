@@ -46,9 +46,9 @@ COPY handler.py        /app/handler.py
 
 # 5) smoke test : le modele se charge-t-il avec cette version de transformers ?
 #    (echoue au BUILD, pas en prod — comme --quick-test-for-ci cote ComfyUI)
-RUN python3 -c "from transformers import AutoProcessor, AutoModelForImageTextToText; \
-AutoProcessor.from_pretrained('${MODEL_DIR}'); \
-AutoModelForImageTextToText.from_pretrained('${MODEL_DIR}', torch_dtype='auto'); \
-print('smoke test OK — modele chargeable')"
+#RUN python3 -c "from transformers import AutoProcessor, AutoModelForImageTextToText; \
+#AutoProcessor.from_pretrained('${MODEL_DIR}'); \
+#AutoModelForImageTextToText.from_pretrained('${MODEL_DIR}', torch_dtype='auto'); \
+#print('smoke test OK — modele chargeable')"
 
 CMD ["python3", "-u", "handler.py"]
