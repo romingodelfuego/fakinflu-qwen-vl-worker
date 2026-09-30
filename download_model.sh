@@ -13,9 +13,16 @@ mkdir -p "${MODEL_DIR}"
 # huggingface-hub est tire par transformers ; on utilise le CLI hf pour un download robuste.
 pip3 install --no-cache-dir "huggingface_hub[cli]>=0.34" >/dev/null
 
-hf download "${MODEL_ID}" \
+huggingface-cli download "${MODEL_ID}" \
   --local-dir "${MODEL_DIR}" \
-  --exclude "*.pth" "*.bin" "original/*"    # on garde les safetensors
+  --exclude "*.pth" "*.bin" "original/*"
 
-echo ">> OK. Contenu :"
-find "${MODEL_DIR}" -maxdepth 1 -type f -printf '   %p  (%s octets)\n' | head -n 40
+count=$(find "${MODEL_DIR}" -name '*.safetensors' | wc -l)
+if [ "$count" -eq 0 ]; then
+  echo "!! ERREUR : aucun fichier .safetensors dans ${MODEL_DIR}"
+  echo "   Le download a probablement echoue."
+  exit 1
+fi
+
+echo ">> OK. ${count} fichier(s) safetensors."
+ls -lh "${MODEL_DIR}"/*.safetensors 2>/dev/null | head -n 20
