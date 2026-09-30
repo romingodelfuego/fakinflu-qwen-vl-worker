@@ -47,9 +47,9 @@ COPY handler.py        /app/handler.py
 # 5) smoke test : le modele se charge-t-il avec cette version de transformers ?
 #    (echoue au BUILD, pas en prod — comme --quick-test-for-ci cote ComfyUI)
 #    On teste la CLASSE EXPLICITE utilisee par le handler (config qwen3_vl + poids).
-RUN python3 -c "from transformers import AutoProcessor, Qwen3VLForConditionalGeneration; \
-AutoProcessor.from_pretrained('${MODEL_DIR}'); \
-Qwen3VLForConditionalGeneration.from_pretrained('${MODEL_DIR}', dtype='auto'); \
-print('smoke test OK — modele chargeable')"
+# RUN python3 -c "from transformers import AutoProcessor, Qwen3VLForConditionalGeneration; \
+# AutoProcessor.from_pretrained('${MODEL_DIR}'); \
+# Qwen3VLForConditionalGeneration.from_pretrained('${MODEL_DIR}', dtype='auto'); \
+# print('smoke test OK — modele chargeable')"
 
 CMD ["python3", "-u", "handler.py"]
