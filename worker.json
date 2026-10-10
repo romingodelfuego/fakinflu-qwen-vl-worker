@@ -1,0 +1,17 @@
+{
+  "name": "promptgen",
+  "repo": "romingodelfuego/fakinflu-qwen-vl-worker",
+  "visibility": "public",
+  "description": "fakinflu RunPod serverless worker: image -> Qwen prompt (Qwen3-VL-8B)",
+  "endpoint": {
+    "name": "fakinflu-qwen-vl-worker",
+    "env_var": "RUNPOD_PROMPTGEN_ENDPOINT_ID",
+    "gpu_pools": ["AMPERE_16"],
+    "workers": {"min": 0, "max": 2, "idleTimeout": 5},
+    "timeout_ms": 600000,
+    "flashboot": "OFF",
+    "disk_gb": 5,
+    "env": {},
+    "notes": "Modele Qwen/Qwen3-VL-8B-Instruct fourni par le champ 'Model' (cached models) de l'endpoint, pas bake."
+  }
+}

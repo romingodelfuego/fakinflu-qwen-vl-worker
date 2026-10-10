@@ -50,7 +50,7 @@ def resolve_snapshot_path(model_id: str) -> str:
 LOCAL_MODEL_PATH = resolve_snapshot_path(MODEL_ID)
 
 with open(SYSTEM_PROMPT_PATH, encoding="utf-8") as f:
-    SYSTEM_PROMPT = f.read()
+    DEFAULT_SYSTEM_PROMPT = f.read()
 
 # --- chargement unique au cold start ------------------------------------------
 _model = Qwen3VLForConditionalGeneration.from_pretrained(
@@ -109,8 +109,11 @@ def handler(job):
     except Exception as e:
         return {"error": f"image base64 invalide : {e}"}
 
+    # system prompt : override runtime si fourni, sinon defaut bake dans l'image
+    system_prompt = (inp.get("system_prompt") or "").strip() or DEFAULT_SYSTEM_PROMPT
+
     messages = [
-        {"role": "system", "content": [{"type": "text", "text": SYSTEM_PROMPT}]},
+        {"role": "system", "content": [{"type": "text", "text": system_prompt}]},
         {"role": "user", "content": [
             {"type": "image", "image": image},
             {"type": "text", "text": _user_text(inp)},
